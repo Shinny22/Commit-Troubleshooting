@@ -214,3 +214,93 @@ bash
 Copy code
 git push origin main --force-with-lease
 En suivant ces étapes, vous pourrez annuler un push spécifique et maintenir votre historique Git conforme à vos besoins.# Commit-Troubleshooting
+
+
+
+--git bisect------------------------------
+
+git bisect est un outil puissant pour trouver l'introduction d'un bug en automatisant une recherche binaire dans l'historique des commits. Voici un guide étape par étape pour l'utiliser :
+
+Pré-requis
+Assurez-vous que vous connaissez un commit où le code fonctionnait (appelé good) et un commit où le bug est présent (appelé bad).
+
+Étapes d'utilisation
+Initialisation de git bisect :
+Commencez par initialiser git bisect en indiquant le commit où le bug est présent et le commit où tout fonctionnait bien.
+
+sh
+Copy code
+git bisect start
+git bisect bad <commit_bad>
+git bisect good <commit_good>
+Automatisation du test :
+git bisect va maintenant checkout différents commits entre les deux points que vous avez spécifiés. À chaque étape, vous devez tester si le bug est présent ou non.
+
+Si le bug est présent, indiquez-le avec git bisect bad.
+Si le bug n'est pas présent, indiquez-le avec git bisect good.
+Exemple de test manuel :
+
+sh
+Copy code
+# Commencez le bisect
+git bisect start
+git bisect bad HEAD
+git bisect good <commit_good>
+
+# Testez le commit actuel
+<test_command_or_process>
+
+# Si le bug est présent
+git bisect bad
+
+# Si le bug n'est pas présent
+git bisect good
+Répétez ce processus jusqu'à ce que git bisect trouve le commit exact qui a introduit le bug.
+
+Fin du bisect :
+Une fois que git bisect a trouvé le commit problématique, il affiche un message indiquant le commit fautif.
+
+sh
+Copy code
+git bisect reset
+Automatisation avec un script
+Vous pouvez automatiser le processus de test en utilisant un script. Par exemple, si vous avez un test qui retourne 0 si tout va bien et 1 si le bug est présent, vous pouvez utiliser :
+
+sh
+Copy code
+git bisect start
+git bisect bad HEAD
+git bisect good <commit_good>
+git bisect run <test_script>
+Où <test_script> est un script ou une commande qui exécute le test nécessaire pour vérifier la présence du bug.
+
+Exemple concret
+Supposons que vous avez les commits suivants et que le bug a été introduit entre commit_good et commit_bad :
+
+sh
+Copy code
+# Initialisation
+git bisect start
+git bisect bad e789cd4   # Commit où le bug est présent
+git bisect good a1b2c3d  # Commit où tout fonctionnait
+
+# Git va checkout un commit intermédiaire pour que vous puissiez le tester
+# Testez le code
+./run_tests.sh
+
+# Si le test échoue, marquez-le comme bad
+git bisect bad
+
+# Ou s'il réussit, marquez-le comme good
+git bisect good
+
+# Répétez jusqu'à ce que git bisect trouve le commit fautif
+
+# Une fois terminé
+git bisect reset
+Avec ces étapes, vous pourrez utiliser git bisect pour identifier précisément le commit qui a introduit le bug.
+
+
+
+
+
