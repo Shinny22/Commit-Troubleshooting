@@ -59,6 +59,10 @@ Pour rechercher des commits modifiant un fichier spécifique :
 git log -- path/to/file
 2. Utiliser gitk
 Si vous préférez une interface graphique, vous pouvez utiliser gitk pour visualiser l'historique des commits :
+
+
+git push origin main --force-with-lease
+
 ```
 
 Copy code
